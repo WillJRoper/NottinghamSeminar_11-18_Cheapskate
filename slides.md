@@ -598,7 +598,7 @@ Hydro is isolated to the zoom region; baryons leaving it are converted to dark m
 <div class="big-num">~50%</div>
 <div>faster than master</div>
 
-<div class="muted mt-6 text-sm">(it was 70%... but some of the improvements landed in master too and closed the gap)</div>
+<div class="muted mt-6 text-sm">(it was 70%... but I optimised things that affect all runs and closed the gap 🤦)</div>
 </div>
 </div>
 
