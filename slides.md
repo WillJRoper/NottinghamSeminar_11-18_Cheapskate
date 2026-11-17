@@ -525,51 +525,6 @@ Show: small mesh -> r_mesh bigger than the whole zoom region -> everything is a 
 
 ---
 
-# Have Less, Do Less -> Win
-
-<div class="body">
-<div class="grid grid-cols-[1fr_1.3fr] gap-8 mt-2 items-center">
-<div>
-
-- Pairs the mesh handles **exit immediately**
-- So check the mesh *while* splitting
-- **70–90%** fewer pair tasks
-- Up to **25%** faster, for *every* SWIFT run
-
-</div>
-<div class="relative h-100">
-  <img v-click.hide="1" src="/img/gravity_pair_tasks.png" class="absolute inset-0 m-auto max-h-full fig" alt="gravity pair tasks" />
-  <img v-click="1" src="/img/task_counts.png" class="absolute inset-0 m-auto max-h-full fig" alt="task counts before and after" />
-</div>
-</div>
-
-</div>
-
-<!--
-The most cheapskate fix of all: the cheapest work is the work you never do.
--->
-
----
-
-# Have Less, Do Less -> Win (For Everyone)
-
-<div class="body"><div class="grid grid-cols-[1fr_1.2fr] gap-8 items-center">
-<div>
-
-- FLAMINGO-DMO-L1000N1800: **not a zoom**
-- Run by Matthieu, not me <span class="muted"><s>lying</s></span> being selective
-- Saving **grows with time** as the cell hierarchy gets deeper
-
-</div>
-<img src="/img/flamingo_dmo_speedup.png" class="fig bg-white max-h-108 mx-auto" alt="scale factor vs wall-clock time, master vs branch, FLAMINGO DMO L1000N1800" />
-</div></div>
-
-<!--
-Same pair-task change on a big periodic DMO run: the branch reaches z = 0 in ~59 h, master is only at a ~ 0.67 by then. Being a cheapskate in shared code pays off for everyone.
--->
-
----
-
 # Fine… Maybe We Do Need A Second High-Res Mesh
 
 <img src="/img/zoom_mesh_geometry.png" class="fig bg-white w-full mt-2" alt="global mesh, zoom mesh domain and cut-off radii" />
@@ -634,7 +589,7 @@ Hydro is isolated to the zoom region; baryons leaving it are converted to dark m
 <div class="big-num">~50%</div>
 <div>faster than master</div>
 
-<div class="muted mt-6 text-sm">(it was 70%... but the pair task improvements landed in master too and closed the gap)</div>
+<div class="muted mt-6 text-sm">(it was 70%... but some of the improvements landed in master too and closed the gap)</div>
 </div>
 </div>
 
