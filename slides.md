@@ -488,24 +488,18 @@ class: section-card
 <div class="muted mt-4">zooms are cheap... once someone has made them cheap</div>
 
 ---
+clicks: 1
+---
 
 # Why Zooms Are Hard: The Balancing Act
 
-<div class="body">
-<div class="grid grid-cols-[1fr_1fr] gap-10 mt-2 items-center">
-<div>
+<div class="body"><ZoomGridExplorer :step="$clicks" /></div>
 
-- SWIFT splits work over a **grid of cells**
-- That needs work spread **uniformly**
-- A zoom is the antithesis
-
-<div v-click class="mt-10">Fix: a <strong>second grid</strong> of zoom cells, nested inside the background.</div>
-
-</div>
-<img src="/img/balancing_grid.png" class="h-108 mx-auto" alt="background grid with nested zoom cells" />
-</div>
-
-</div>
+<!--
+Interactive, toy model. 1 Gpc box, 512^3 high-res particles in a sphere at the centre, 512^3 low-res particles spread over the rest. Work per cell ~ particles per cell; load imbalance = busiest cell / average background cell (3D counts, the panels are mid-plane slices).
+Click 0: periodic uniform grid only. A small region lands in one cell, which holds all the high-res particles: thousands of times the work of its neighbours.
+Click 1: the cells covering the region become the void and get a second, nested grid of zoom cells. Push zoom cdim up until it balances. Then grow the region: it spans more background cells, the void grows, and the zoom cdim needed changes. Shrink it to a few Mpc: one background cell, and you need a fine zoom grid to balance.
+-->
 
 ---
 
