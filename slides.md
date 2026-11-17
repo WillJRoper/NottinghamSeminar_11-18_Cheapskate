@@ -354,15 +354,16 @@ $$
 ---
 layout: center
 class: text-center
+clicks: 1
 ---
 
-<div class="grid grid-cols-[1fr_auto] gap-12 items-center">
-<div>
+<div class="relative" style="width: 900px; height: 400px">
+<div class="absolute" style="top: 50%; width: 630px; transition: all 0.7s ease" :style="{ left: $clicks >= 1 ? '0px' : '135px', transform: 'translateY(-50%)' }">
 <img src="/tessera/tessera_dark.png" class="w-full mx-auto" alt="TESSERA" />
 
 <div class="muted mt-8 text-lg">a suite of zooms for emulation and inference</div>
 </div>
-<div class="text-center">
+<div class="absolute text-center" style="right: 0; top: 50%; transition: all 0.7s ease" :style="{ opacity: $clicks >= 1 ? 1 : 0, transform: `translate(${$clicks >= 1 ? 0 : 40}px, -50%)` }">
 <img src="/img/chris_lovell.webp" class="h-72 rounded-lg mx-auto" alt="Chris Lovell" />
 <div class="text-sm mt-2">Chris Lovell</div>
 <div class="text-xs muted">TESSERA lead</div>
