@@ -488,17 +488,15 @@ class: section-card
 <div class="muted mt-4">zooms are cheap... once someone has made them cheap</div>
 
 ---
-clicks: 1
----
 
 # Why Zooms Are Hard: The Balancing Act
 
-<div class="body"><ZoomGridExplorer :step="$clicks" /></div>
+<div class="body"><ZoomGridExplorer /></div>
 
 <!--
 Interactive, toy model. 1 Gpc box, 512^3 high-res particles in a sphere at the centre, 512^3 low-res particles spread over the rest. Work per cell ~ particles per cell; load imbalance = busiest cell / average background cell (3D counts, the panels are mid-plane slices).
-Click 0: periodic uniform grid only. A small region lands in one cell, which holds all the high-res particles: thousands of times the work of its neighbours.
-Click 1: the cells covering the region become the void and get a second, nested grid of zoom cells. Each void cell is split depth times (2^depth zoom cells per side, as in SWIFT's zoom_top_level_depth). Push depth up until it balances. Then grow the region: it spans more background cells, the void grows, and the depth needed changes. Shrink it to a few Mpc: one background cell, and you need a deep split to balance.
+Checkbox off: periodic uniform grid only. A small region lands in one cell, which holds all the high-res particles: thousands of times the work of its neighbours.
+Tick "nested zoom grid": the cells covering the region become the void and get a second, nested grid of zoom cells. Each void cell is split depth times (2^depth zoom cells per side, as in SWIFT's zoom_top_level_depth). Push depth up until it balances. Then grow the region: it spans more background cells, the void grows, and the depth needed changes. Shrink it to a few Mpc: one background cell, and you need a deep split to balance.
 -->
 
 ---
