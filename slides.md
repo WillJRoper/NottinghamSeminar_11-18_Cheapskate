@@ -20,7 +20,7 @@ class: text-center
 
 <div class="title-fg">
 
-<div class="muted text-sm mb-6">will@nottingham:~$ ./seminar --budget=0 --move-to-monday=1</div>
+<div class="muted text-sm mb-6">will@nottingham:~$ ./seminar --budget=0 --resist-warhammer-world=1</div>
 
 <h1 class="blink !text-5xl !mb-4">Doing Astrophysics<br>As A Cheapskate</h1>
 
