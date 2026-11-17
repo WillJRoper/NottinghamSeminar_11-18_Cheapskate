@@ -356,9 +356,18 @@ layout: center
 class: text-center
 ---
 
-<img src="/tessera/tessera_dark.png" class="w-[70%] mx-auto" alt="TESSERA" />
+<div class="grid grid-cols-[1fr_auto] gap-12 items-center">
+<div>
+<img src="/tessera/tessera_dark.png" class="w-full mx-auto" alt="TESSERA" />
 
 <div class="muted mt-8 text-lg">a suite of zooms for emulation and inference</div>
+</div>
+<div class="text-center">
+<img src="/img/chris_lovell.webp" class="h-72 rounded-lg mx-auto" alt="Chris Lovell" />
+<div class="text-sm mt-2">Chris Lovell</div>
+<div class="text-xs muted">TESSERA lead</div>
+</div>
+</div>
 
 ---
 clicks: 5
