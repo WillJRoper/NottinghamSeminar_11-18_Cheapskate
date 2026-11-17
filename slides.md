@@ -395,10 +395,10 @@ class: full-bleed
 ---
 
 <div class="absolute inset-0">
-  <img src="/tessera/mosaic_lowres.jpg" class="w-full h-full object-cover" alt="mosaic of TESSERA zooms" />
+  <img src="/tessera/mosaic_lowres.jpg" class="w-full h-full object-cover" alt="mosaic of 1024 TESSERA zooms" />
 </div>
 
-<div class="absolute bottom-6 left-6 term text-sm"><strong>2,048 zooms</strong> complete, expanding to <strong>4,096</strong>, from an 8,192-point Sobol' design over cosmology + galaxy formation</div>
+<div class="absolute bottom-6 left-6 term text-sm"><strong>1,024 zooms</strong> run so far, from an 8,192-point Sobol' design over cosmology + galaxy formation</div>
 
 ---
 
@@ -446,7 +446,7 @@ Fractional error of the emulator on regions it never saw in training (104 held-o
 <div class="muted">periodic, same resolution &amp; volume</div>
 
 - one box: **~9 M core-hours**
-- 2,048 boxes: <span class="bad">**18 billion core-hours**</span>
+- 1000 boxes: <span class="bad">**9 billion core-hours**</span>
 - ~0.5 PB of snapshots *per box*
 
 </div>
@@ -454,7 +454,7 @@ Fractional error of the emulator on regions it never saw in training (104 held-o
 <div class="term-bar"><span /><span /><span /></div>
 <div class="muted">TESSERA so far</div>
 
-- 2,048 zooms: <span class="accent">**< 2 M core-hours**</span>
+- 1,024 zooms: <span class="accent">**< 1 M core-hours**</span>
 - one node per zoom: fills the gaps
 - ~17 GB per zoom after trees
 
@@ -466,7 +466,7 @@ Fractional error of the emulator on regions it never saw in training (104 held-o
 </div>
 
 <!--
-18 billion vs under 2 million core hours (2,048 zooms done, 4,096 underway). The PM parents are essentially free. 8192^3 periodic equivalent; 3.5 TB per snapshot x 140 snapshots. Each zoom ~100 GB with 140 outputs, ~17 GB after merger trees.
+9 billion vs under 1 million core hours. The PM parents are essentially free. 8192^3 periodic equivalent; 3.5 TB per snapshot x 140 snapshots. Each zoom ~100 GB with 140 outputs, ~17 GB after merger trees.
 -->
 
 ---
