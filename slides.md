@@ -499,25 +499,6 @@ class: section-card
 
 ---
 
-# Cell Construction: Three Kinds Of Cell
-
-<img src="/img/cell_construction.png" class="h-108 mx-auto mt-2" alt="background, void and zoom cell hierarchy" />
-
-<div class="text-center text-sm muted">background → void (holds the zoom region) → zoom cells, each with its own octree</div>
-
----
-
-# Exploring The Geometry
-
-<div class="body"><ZoomCellExplorer /></div>
-
-<!--
-Interactive, follows zoom_init.c (zoom_region_init). The high-res particle extent is padded by region_pad_factor; the background grid is either set or auto-chosen (floor(L/max_dim), odd, shifted so the padded region sits inside one cell, min 8); the void is the background cells covering the padded region; the zoom region IS the void and its cells are the void cells split zoom_top_level_depth times.
-Show: auto mode gives a single void cell. Turn auto off and pick an even cdim: the box centre lands on a cell edge, the void becomes 2^3 cells and the achieved pad factor doubles (warning). Shrink bkg cells relative to the region to hit the "too many zoom regions" warning/error.
--->
-
----
-
 # We All Love Mesh Gravity
 
 <div class="body"><div class="grid grid-cols-[1.9fr_1fr] gap-8 items-center">
@@ -538,7 +519,7 @@ Show: auto mode gives a single void cell. Turn auto off and pick an even cdim: t
 <div class="body"><PairTaskHistogram /></div>
 
 <!--
-Interactive, toy model. 1 Gpc parent, the 30 Mpc zoom region from the geometry slide: 16^3 zoom cells of 2.16 Mpc. All pairs of zoom cells binned by minimum separation. The slider sets the FFT mesh side N; with SWIFT defaults r_mesh = 4.5 x 1.25 x L/N. Pairs closer than min(r_FMM, r_mesh) are pair tasks, between r_FMM and r_mesh multipole-only, beyond r_mesh the mesh does it all. r_FMM is illustrative (3 zoom cells).
+Interactive, toy model. 1 Gpc parent, a 30 Mpc zoom region: 16^3 zoom cells of 2.16 Mpc. All pairs of zoom cells binned by minimum separation. The slider sets the FFT mesh side N; with SWIFT defaults r_mesh = 4.5 x 1.25 x L/N. Pairs closer than min(r_FMM, r_mesh) are pair tasks, between r_FMM and r_mesh multipole-only, beyond r_mesh the mesh does it all. r_FMM is illustrative (3 zoom cells).
 Show: small mesh -> r_mesh bigger than the whole zoom region -> everything is a task. Push N up -> tasks fall. But you hit 1290 (N^3 > 2^31) without a distributed FFT. Leave that hanging: it is what the second mesh solves later.
 -->
 
