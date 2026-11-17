@@ -629,17 +629,6 @@ The gap shrank because the optimisations benefit every SWIFT run: being a cheaps
 Strong scaling, wall-clock vs MPI rank count, EAGLE-model hydro and DMO, against perfect scaling (dashed). Numbers on imbalance from the HPC Days 26 talk.
 -->
 ---
-
-# The Issues Still To Solve With Partitioning
-
-<ZoomCommsExplorer class="mt-2" />
-
-<!--
-Interactive. Counts are 3D (scripts/zoom_comms.py): 32^3 background cells, the central void cell holds 16^3 zoom cells, ranks are equal azimuthal wedges around the zoom region, so every rank owns zoom cells and the background next to them (worst case). Every gravity pair closer than r split across ranks is a comm. The map is the mid-plane slice.
-Show: at r = 17.6 Mpc (global mesh) the background cells overlapping the zoom region need comms with every off-rank zoom cell within r: background-zoom dominates. Slide r down to 1.7 Mpc (zoom mesh): it collapses. Then slide ranks up.
--->
-
----
 class: section-card
 ---
 
