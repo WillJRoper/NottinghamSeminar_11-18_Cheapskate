@@ -6,8 +6,8 @@
 //   step 0: background grid only. The cells overlapping the sphere carry all
 //           of N_HR between them.
 //   step 1: the background cells covering the sphere become the "void" and
-//           are split into a zoom grid with zoom^3 cells per void, so N_HR is
-//           shared over many more, smaller cells.
+//           each is split `depth` times (2^depth zoom cells per side), so
+//           N_HR is shared over many more, smaller cells.
 // Load counts are 3D (cells whose cube intersects the sphere); the panels are
 // mid-plane slices.
 import { computed, ref } from 'vue'
@@ -19,7 +19,7 @@ const N_HR = 512 ** 3
 const N_BG = 512 ** 3
 
 const bkg = ref(15)
-const zoom = ref(16)
+const depth = ref(2)
 const logD = ref(Math.log10(30)) // region diameter [Mpc]
 const D = computed(() => 10 ** logD.value)
 const R = computed(() => D.value / 2)
@@ -31,7 +31,8 @@ const voidHi = computed(() => Math.min(bkg.value - 1, Math.floor((C + R.value) /
 const nVoid = computed(() => voidHi.value - voidLo.value + 1)
 const x0 = computed(() => voidLo.value * w.value) // void lower edge
 const V = computed(() => nVoid.value * w.value) // void side
-const zw = computed(() => V.value / zoom.value) // zoom cell side
+const zoom = computed(() => nVoid.value * 2 ** depth.value) // zoom cells per void side
+const zw = computed(() => w.value / 2 ** depth.value) // zoom cell side
 
 // does the cube [lo, lo + s]^k intersect the sphere? (k = 2 for drawing, 3 for counting)
 const d2 = (lo, s) => {
@@ -161,8 +162,8 @@ const fmtN = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${(n / 
       <input v-model.number="logD" type="range" :min="Math.log10(5)" :max="Math.log10(700)" step="0.01" />
       <label>background cdim <b>{{ bkg }}³</b> <span class="muted">· {{ fmtL(w) }} Mpc</span></label>
       <input v-model.number="bkg" type="range" min="3" max="48" step="1" />
-      <label :class="{ off: step < 1 }">zoom cdim <b>{{ zoom }}³</b> <span class="muted">· {{ fmtL(zw) }} Mpc</span></label>
-      <input v-model.number="zoom" type="range" min="1" max="64" step="1" :disabled="step < 1" />
+      <label :class="{ off: step < 1 }">zoom depth <b>{{ depth }}</b> <span class="muted">· {{ 2 ** depth }}³ per bkg cell · {{ zoom }}³ total · {{ fmtL(zw) }} Mpc</span></label>
+      <input v-model.number="depth" type="range" min="0" max="6" step="1" :disabled="step < 1" />
 
       <div class="stats">
         <div>void: <b>{{ nVoid }}³</b> background cell{{ nVoid > 1 ? 's' : '' }}</div>
