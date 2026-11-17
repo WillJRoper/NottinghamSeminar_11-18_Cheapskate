@@ -398,7 +398,7 @@ class: full-bleed
   <img src="/tessera/mosaic_lowres.jpg" class="w-full h-full object-cover" alt="mosaic of TESSERA zooms" />
 </div>
 
-<div class="absolute bottom-6 left-6 term text-sm"><strong>2,048 zooms</strong> complete, expanding to <strong>4,096</strong>, from an 8,192-point Sobol' design over cosmology + galaxy formation</div>
+<div class="absolute bottom-6 left-6 term text-sm"><strong>2,048 zooms</strong> complete, from an 8,192-point Sobol' design over cosmology + galaxy formation</div>
 
 ---
 
