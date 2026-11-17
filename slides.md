@@ -527,7 +527,7 @@ Show: small mesh -> r_mesh bigger than the whole zoom region -> everything is a 
 
 ---
 
-# Fine… Maybe We Do Need A Second High-Res Mesh
+# Maybe We Do Need A Second High-Res Mesh
 
 <img src="/img/zoom_mesh_geometry.png" class="fig bg-white w-full mt-2" alt="global mesh, zoom mesh domain and cut-off radii" />
 
@@ -619,6 +619,7 @@ The gap shrank because the optimisations benefit every SWIFT run: being a cheaps
 <!--
 Strong scaling, wall-clock vs MPI rank count, EAGLE-model hydro and DMO, against perfect scaling (dashed). Imbalance now sits at ~5%.
 -->
+
 ---
 class: section-card
 ---

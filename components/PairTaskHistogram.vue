@@ -1,6 +1,6 @@
 <script setup>
 // Toy model of zoom-cell gravity pairs in a 1 Gpc parent box. The zoom region
-// is the geometry from the explorer slide (29^3 background cells, one void
+// is a 30 Mpc high-res region (29^3 background cells, one void
 // cell of 34.5 Mpc split to depth 4: 16^3 zoom cells of 2.16 Mpc). Every pair
 // of zoom cells is binned by its minimum separation d:
 //   d < min(r_FMM, r_mesh)   -> pair task
