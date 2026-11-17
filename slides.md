@@ -610,15 +610,14 @@ The gap shrank because the optimisations benefit every SWIFT run: being a cheaps
 <div>
 
 - Distributed zoom runs now work, with **full physics**
-- Imbalance can reach **5%**, but often **~30%** on average
-- The boundary exacerbates comms (next!)
+- Imbalance sits comfortably at **~5%**
 - Better exchanges are in progress
 
 </div>
 </div></div>
 
 <!--
-Strong scaling, wall-clock vs MPI rank count, EAGLE-model hydro and DMO, against perfect scaling (dashed). Numbers on imbalance from the HPC Days 26 talk.
+Strong scaling, wall-clock vs MPI rank count, EAGLE-model hydro and DMO, against perfect scaling (dashed). Imbalance now sits at ~5%.
 -->
 ---
 class: section-card
