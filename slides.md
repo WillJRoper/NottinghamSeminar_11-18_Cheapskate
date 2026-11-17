@@ -494,9 +494,9 @@ class: section-card
 <div class="body"><ZoomGridExplorer /></div>
 
 <!--
-Interactive, toy model. 1 Gpc box, 512^3 high-res particles in a sphere at the centre, 512^3 low-res particles spread over the rest. Work per cell ~ particles per cell; load imbalance = busiest cell / average background cell (3D counts, the panels are mid-plane slices).
-Checkbox off: periodic uniform grid only. A small region lands in one cell, which holds all the high-res particles: thousands of times the work of its neighbours.
-Tick "nested zoom grid": the cells covering the region become the void and get a second, nested grid of zoom cells. Each void cell is split depth times (2^depth zoom cells per side, as in SWIFT's zoom_top_level_depth). Push depth up until it balances. Then grow the region: it spans more background cells, the void grows, and the depth needed changes. Shrink it to a few Mpc: one background cell, and you need a deep split to balance.
+Interactive, toy model (mid-plane slice). 1 Gpc periodic box, high-res region as a disc at the centre.
+Checkbox off: periodic uniform grid only. A small region lands in one cell, which holds all the high-res particles: far more work than its neighbours.
+Tick "nested zoom grid": the cells covering the region become the void and each is split depth times (2^depth zoom cells per side, as in SWIFT's zoom_top_level_depth). Grow the region: it spans more background cells, the void grows. Shrink it to a few Mpc: one background cell, and you need a deep split to get cells the size of the structure.
 -->
 
 ---
