@@ -106,7 +106,7 @@ const shells = computed(() => {
     for (let b = 0; b < N; b++) {
       if (a === I0 && b === I0) continue
       const d = W * Math.hypot(g(a - I0), g(b - I0))
-      out.push({ x: a * CW, y: b * CW, cls: d < rPair ? 'task' : d < rEff.value ? 'm2l' : 'mesh' })
+      out.push({ a, b, cls: d < rPair ? 'task' : d < rEff.value ? 'm2l' : 'mesh' })
     }
   return out
 })
@@ -168,7 +168,8 @@ const fmt = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${(n / 1
           <rect :width="G" :height="G" class="zbg" />
           <line v-for="i in NV + 1" :key="`kv${i}`" :x1="zx(VX + i * WB - WB)" :x2="zx(VX + i * WB - WB)" y1="0" :y2="G" class="bkl" />
           <line v-for="i in NV + 1" :key="`kh${i}`" :y1="zx(VX + i * WB - WB)" :y2="zx(VX + i * WB - WB)" x1="0" :x2="G" class="bkl" />
-          <circle :cx="G / 2" :cy="G / 2" :r="15 * zs" class="hrc" />
+          <rect v-for="(s, k) in shells" :key="`s${k}`" :x="zx(VX + s.a * W)" :y="zx(VX + s.b * W)" :width="W * zs" :height="W * zs" :class="s.cls" />
+          <rect :x="zx(VX + I0 * W)" :y="zx(VX + I0 * W)" :width="W * zs" :height="W * zs" class="me" />
           <line v-for="i in N - 1" :key="`zv${i}`" :x1="zx(VX + i * W)" :x2="zx(VX + i * W)" :y1="zx(VX)" :y2="zx(VX + NV * WB)" class="zgl" />
           <line v-for="i in N - 1" :key="`zh${i}`" :y1="zx(VX + i * W)" :y2="zx(VX + i * W)" :x1="zx(VX)" :x2="zx(VX + NV * WB)" class="zgl" />
           <rect :x="zx(VX)" :y="zx(VX)" :width="NV * WB * zs" :height="NV * WB * zs" class="zreg" />
@@ -179,14 +180,14 @@ const fmt = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${(n / 1
       </div>
       <svg v-else :viewBox="`0 0 ${G} ${G}`" class="geo">
         <rect :width="G" :height="G" class="zbg" />
-        <rect v-for="(s, k) in shells" :key="k" :x="s.x" :y="s.y" :width="CW" :height="CW" :class="s.cls" />
+        <rect v-for="(s, k) in shells" :key="k" :x="s.a * CW" :y="s.b * CW" :width="CW" :height="CW" :class="s.cls" />
         <line v-for="i in N - 1" :key="`v${i}`" :x1="i * CW" :x2="i * CW" y1="0" :y2="G" class="zl" />
         <line v-for="i in N - 1" :key="`h${i}`" :y1="i * CW" :y2="i * CW" x1="0" :x2="G" class="zl" />
         <rect :x="I0 * CW" :y="I0 * CW" :width="CW" :height="CW" class="me" />
         <rect :x="G - 6 - meshCell" y="6" :width="meshCell" :height="meshCell" class="mc" />
         <rect v-if="zoom" :x="6" y="6" :width="zoomCell" :height="zoomCell" class="zc" />
       </svg>
-      <div v-if="zoom" class="cap"><b>□</b> zoom region · <span class="zt">⬚ zoom mesh</span> · <span class="accent">□ FFT cell</span> · <span class="zt">□ zoom FFT cell</span></div>
+      <div v-if="zoom" class="cap">partners of <b>■</b>: <span class="warn">pair task</span> · <span class="theory">multipole</span> · <span class="muted">mesh</span><br><b>□</b> zoom region · <span class="zt">⬚ zoom mesh</span> · <span class="accent">□ FFT cell</span> · <span class="zt">□ zoom FFT cell</span></div>
       <div v-else class="cap">partners of <b>□</b>: <span class="warn">pair task</span> · <span class="theory">multipole</span> · <span class="muted">mesh</span> · <span class="accent">□ FFT cell</span></div>
       <div class="setup">
         <div class="muted"># setup (counts are 3D, all {{ fmt(NPAIRS) }} zoom-cell pairs)</div>
@@ -252,7 +253,6 @@ input[type='range'].zr { accent-color: #f472b6; }
 .zgl { stroke: #777; stroke-width: 0.4; }
 .zreg { fill: none; stroke: #fff; stroke-width: 1.5; }
 .zdom { fill: none; stroke: #f472b6; stroke-width: 1; stroke-dasharray: 3 2; }
-.hrc { fill: color-mix(in srgb, var(--warn) 25%, transparent); stroke: var(--warn); stroke-width: 1; }
 .geo { width: 56%; display: block; margin: 0 auto; border: 1px solid var(--line); }
 .zbg { fill: #0a0a0a; }
 .zl { stroke: #000; stroke-width: 0.8; }
