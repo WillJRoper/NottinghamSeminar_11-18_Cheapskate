@@ -154,7 +154,7 @@ const fmt = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${(n / 1
         <rect :x="G - 6 - meshCell" y="6" :width="meshCell" :height="meshCell" class="mc" />
         <rect v-if="zoom" :x="6" y="6" :width="zoomCell" :height="zoomCell" class="zc" />
       </svg>
-      <div class="cap">partners of <b>□</b>: <span class="warn">pair task</span> · <span class="theory">multipole</span> · <span class="muted">mesh</span> · <span class="accent">□ FFT cell</span><span v-if="zoom" class="zt"> · □ zoom</span></div>
+      <div class="cap"><template v-if="!zoom">partners of <b>□</b>: </template><span class="warn">pair task</span> · <span class="theory">multipole</span> · <span class="muted">mesh</span> · <span class="accent">□ FFT{{ zoom ? '' : ' cell' }}</span><span v-if="zoom" class="zt"> · □ zoom FFT</span></div>
       <div class="setup">
         <div class="muted"># setup (counts are 3D, all {{ fmt(NPAIRS) }} zoom-cell pairs)</div>
         <div>box {{ L }} Mpc · 29³ bkg cells of {{ (L / 29).toFixed(1) }} Mpc</div>
