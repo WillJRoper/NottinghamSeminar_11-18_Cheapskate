@@ -72,11 +72,25 @@ const bars = computed(() =>
   }),
 )
 
-// geometry panel: the 16^2 zoom slice, r_mesh and r_FMM around a central cell,
-// and one FFT mesh cell for scale
+// geometry panel: the 16^2 zoom slice around cell i, every other cell coloured
+// by what its pair with i becomes (same minimum-separation rule as the
+// histogram), plus one FFT mesh cell for scale
 const G = 200
 const gs = G / (N * W)
-const c = G / 2
+const CW = G / N
+const I0 = N / 2 // cell i
+const shells = computed(() => {
+  const rPair = Math.min(R_FMM, rMesh.value)
+  const g = (x) => Math.max(Math.abs(x) - 1, 0)
+  const out = []
+  for (let a = 0; a < N; a++)
+    for (let b = 0; b < N; b++) {
+      if (a === I0 && b === I0) continue
+      const d = W * Math.hypot(g(a - I0), g(b - I0))
+      out.push({ x: a * CW, y: b * CW, cls: d < rPair ? 'task' : d < rMesh.value ? 'm2l' : 'mesh' })
+    }
+  return out
+})
 const meshCell = computed(() => (L / meshN.value) * gs)
 
 const sliderPct = (n) => `${((Math.log2(n) - LOG_MIN) / (LOG_MAX - LOG_MIN)) * 100}%`
@@ -112,20 +126,15 @@ const fmt = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${(n / 1
 
     <div class="side">
       <svg :viewBox="`0 0 ${G} ${G}`" class="geo">
-        <defs>
-          <clipPath id="ptclip"><rect :width="G" :height="G" /></clipPath>
-        </defs>
         <rect :width="G" :height="G" class="zbg" />
-        <g clip-path="url(#ptclip)">
-          <line v-for="i in N - 1" :key="`v${i}`" :x1="(i * G) / N" :x2="(i * G) / N" y1="0" :y2="G" class="zl" />
-          <line v-for="i in N - 1" :key="`h${i}`" :y1="(i * G) / N" :y2="(i * G) / N" x1="0" :x2="G" class="zl" />
-          <circle :cx="c" :cy="c" :r="rMesh * gs" class="rmc" />
-          <circle :cx="c" :cy="c" :r="R_FMM * gs" class="fmc" />
-        </g>
-        <rect :x="c - G / N / 2" :y="c - G / N / 2" :width="G / N" :height="G / N" class="me" />
+        <rect v-for="(s, k) in shells" :key="k" :x="s.x" :y="s.y" :width="CW" :height="CW" :class="s.cls" />
+        <line v-for="i in N - 1" :key="`v${i}`" :x1="i * CW" :x2="i * CW" y1="0" :y2="G" class="zl" />
+        <line v-for="i in N - 1" :key="`h${i}`" :y1="i * CW" :y2="i * CW" x1="0" :x2="G" class="zl" />
+        <rect :x="I0 * CW" :y="I0 * CW" :width="CW" :height="CW" class="me" />
+        <text :x="(I0 + 0.5) * CW" :y="(I0 + 0.5) * CW + 3.5" class="ci">i</text>
         <rect :x="G - 6 - meshCell" y="6" :width="meshCell" :height="meshCell" class="mc" />
       </svg>
-      <div class="cap">mid-plane slice · <span class="accent">r_mesh</span> · <span class="theory">r_FMM</span> · <span class="warn">□ mesh cell</span></div>
+      <div class="cap">partners of <b>i</b>: <span class="warn">pair task</span> · <span class="theory">multipole</span> · <span class="muted">mesh</span> · <span class="accent">□ FFT cell</span></div>
       <div class="setup">
         <div class="muted"># setup (counts are 3D, all {{ fmt(NPAIRS) }} zoom-cell pairs)</div>
         <div>box {{ L }} Mpc · 29³ bkg cells of {{ (L / 29).toFixed(1) }} Mpc</div>
@@ -170,11 +179,10 @@ const fmt = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${(n / 1
 .sw.mesh { background: #2a2a2a; border: 1px solid #555; }
 .geo { width: 56%; display: block; margin: 0 auto; border: 1px solid var(--line); }
 .zbg { fill: #0a0a0a; }
-.zl { stroke: #2f2f2f; stroke-width: 0.6; }
-.rmc { fill: color-mix(in srgb, var(--accent) 12%, transparent); stroke: var(--accent); stroke-width: 1.5; }
-.fmc { fill: none; stroke: var(--theory); stroke-dasharray: 3 2; stroke-width: 1.2; }
+.zl { stroke: #000; stroke-width: 0.8; }
+.ci { fill: #000; font-size: 10px; font-weight: 700; text-anchor: middle; }
 .me { fill: #fff; }
-.mc { fill: none; stroke: var(--warn); stroke-width: 1.5; }
+.mc { fill: none; stroke: var(--accent); stroke-width: 1.5; }
 .cap { font-size: 0.6rem; color: var(--ink); text-align: center; margin-top: 4px; }
 label { display: block; }
 label b { color: var(--accent); }
