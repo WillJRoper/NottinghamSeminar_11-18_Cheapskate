@@ -30,7 +30,8 @@ const LOG_MIN = Math.log2(64)
 const LOG_MAX = Math.log2(4096)
 const PRESETS = [256, 512, 1024, N_MAX_SERIAL]
 
-const logN = ref(Math.log2(512))
+// zoom mode starts at 256^3 so r_mesh (11 Mpc) matches the previous slide
+const logN = ref(Math.log2(props.zoom ? 256 : 512))
 const meshN = computed(() => Math.round(2 ** logN.value))
 const rMesh = computed(() => (4.5 * 1.25 * L) / meshN.value)
 const needsMPI = computed(() => meshN.value > N_MAX_SERIAL)
@@ -38,7 +39,7 @@ const needsMPI = computed(() => meshN.value > N_MAX_SERIAL)
 const LZ = (NV + 2) * WB // zoom mesh domain: void + 1 bkg cell each side [Mpc]
 const ZLOG_MIN = Math.log2(16)
 const ZLOG_MAX = Math.log2(4096)
-const logZ = ref(Math.log2(512))
+const logZ = ref(Math.log2(128)) // r_mesh,zoom 2.7 Mpc: tasks only to ~1 zoom cell
 const zoomN = computed(() => Math.round(2 ** logZ.value))
 const rZoom = computed(() => (4.5 * 1.25 * LZ) / zoomN.value)
 const zoomMPI = computed(() => zoomN.value > N_MAX_SERIAL)
@@ -194,9 +195,11 @@ const fmt = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${(n / 1
         <div>box {{ L }} Mpc · {{ BK }}³ bkg cells of {{ WB.toFixed(1) }} Mpc</div>
         <div>30 Mpc high-res region → {{ NV }}³ void cell{{ NV > 1 ? 's' : '' }}</div>
         <div>{{ N }}³ zoom cells of {{ W.toFixed(2) }} Mpc</div>
-        <div>r_mesh = 4.5 × 1.25 × L / N<sub>mesh</sub> (SWIFT defaults)</div>
         <div v-if="zoom">zoom mesh over void + 1 bkg cell: {{ LZ.toFixed(1) }} Mpc</div>
-        <div>r_FMM = {{ R_FMM.toFixed(1) }} Mpc (illustrative)</div>
+        <template v-else>
+          <div>r_mesh = 4.5 × 1.25 × L / N<sub>mesh</sub> (SWIFT defaults)</div>
+          <div>r_FMM = {{ R_FMM.toFixed(1) }} Mpc (illustrative)</div>
+        </template>
       </div>
 
       <label class="mt-3">FFT mesh <b :class="{ bad: needsMPI }">{{ meshN }}³</b> <span class="muted">· r_mesh {{ rMesh.toFixed(1) }} Mpc</span></label>
