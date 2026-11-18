@@ -529,13 +529,7 @@ Show: small mesh -> r_mesh bigger than the whole zoom region -> everything is a 
 
 # Maybe We Do Need A Second High-Res Mesh
 
-<img src="/img/zoom_mesh_geometry.png" class="fig bg-white w-full mt-2" alt="global mesh, zoom mesh domain and cut-off radii" />
-
-<div class="text-center mt-6 text-lg">r<sub>mesh</sub>: <span class="bad">17.6 Mpc</span> → <span class="accent">1.7 Mpc</span></div>
-
-<!--
-3.2 Gpc box, 63^3 background cells, global mesh 1024^3. Zoom mesh 512^3 over the zoom region + 1 background cell (0.30 Mpc mesh cells).
--->
+<div class="body"><PairTaskHistogram zoom /></div>
 
 ---
 
