@@ -131,10 +131,9 @@ const fmt = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${(n / 1
         <line v-for="i in N - 1" :key="`v${i}`" :x1="i * CW" :x2="i * CW" y1="0" :y2="G" class="zl" />
         <line v-for="i in N - 1" :key="`h${i}`" :y1="i * CW" :y2="i * CW" x1="0" :x2="G" class="zl" />
         <rect :x="I0 * CW" :y="I0 * CW" :width="CW" :height="CW" class="me" />
-        <text :x="(I0 + 0.5) * CW" :y="(I0 + 0.5) * CW + 3.5" class="ci">i</text>
         <rect :x="G - 6 - meshCell" y="6" :width="meshCell" :height="meshCell" class="mc" />
       </svg>
-      <div class="cap">partners of <b>i</b>: <span class="warn">pair task</span> · <span class="theory">multipole</span> · <span class="muted">mesh</span> · <span class="accent">□ FFT cell</span></div>
+      <div class="cap">partners of <b>□</b>: <span class="warn">pair task</span> · <span class="theory">multipole</span> · <span class="muted">mesh</span> · <span class="accent">□ FFT cell</span></div>
       <div class="setup">
         <div class="muted"># setup (counts are 3D, all {{ fmt(NPAIRS) }} zoom-cell pairs)</div>
         <div>box {{ L }} Mpc · 29³ bkg cells of {{ (L / 29).toFixed(1) }} Mpc</div>
@@ -180,7 +179,6 @@ const fmt = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${(n / 1
 .geo { width: 56%; display: block; margin: 0 auto; border: 1px solid var(--line); }
 .zbg { fill: #0a0a0a; }
 .zl { stroke: #000; stroke-width: 0.8; }
-.ci { fill: #000; font-size: 10px; font-weight: 700; text-anchor: middle; }
 .me { fill: #fff; }
 .mc { fill: none; stroke: var(--accent); stroke-width: 1.5; }
 .cap { font-size: 0.6rem; color: var(--ink); text-align: center; margin-top: 4px; }
