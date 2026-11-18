@@ -10,15 +10,20 @@
 //   r_mesh = r_cut_max * a_smooth * L / N = 4.5 * 1.25 * L / N.
 // Without a distributed (MPI) FFTW the mesh is capped at N = 1290
 // (mesh_gravity.c: N^3 must stay below 2^31).
-// With `zoom`, a second FFT mesh covers the void plus one background cell each
-// side; zoom-cell pairs beyond its r_mesh are handled by that mesh instead.
+// With `zoom`, an indicative 500 Mpc parent with 32^3 background cells (the
+// 30 Mpc region straddles the centre, so the void is 2^3 cells, split into 16^3
+// zoom cells), and a second FFT mesh over the void plus one background cell
+// each side; zoom-cell pairs beyond its r_mesh are handled by that mesh.
 import { computed, ref } from 'vue'
 
 const props = defineProps({ zoom: { type: Boolean, default: false } })
 
-const L = 1000 // box [Mpc]
+const L = props.zoom ? 500 : 1000 // box [Mpc]
+const BK = props.zoom ? 32 : 29 // background cells per side
+const NV = props.zoom ? 2 : 1 // void cells per side
+const WB = L / BK // background cell width [Mpc]
 const N = 16 // zoom cells per side
-const W = 1000 / 29 / 16 // zoom cell width [Mpc]
+const W = (NV * WB) / N // zoom cell width [Mpc]
 const R_FMM = 3 * W // fixed, illustrative
 const N_MAX_SERIAL = 1290
 const LOG_MIN = Math.log2(64)
@@ -30,7 +35,7 @@ const meshN = computed(() => Math.round(2 ** logN.value))
 const rMesh = computed(() => (4.5 * 1.25 * L) / meshN.value)
 const needsMPI = computed(() => meshN.value > N_MAX_SERIAL)
 
-const LZ = 3 * (L / 29) // zoom mesh domain: void + 1 bkg cell each side [Mpc]
+const LZ = (NV + 2) * WB // zoom mesh domain: void + 1 bkg cell each side [Mpc]
 const ZLOG_MIN = Math.log2(16)
 const ZLOG_MAX = Math.log2(4096)
 const logZ = ref(Math.log2(512))
@@ -107,6 +112,12 @@ const shells = computed(() => {
 })
 const meshCell = computed(() => (L / meshN.value) * gs)
 const zoomCell = computed(() => (LZ / zoomN.value) * gs)
+
+// zoom-mode panels: the whole box, and a zoom-in on the zoom mesh domain
+const VX = (BK / 2 - NV / 2) * WB // void lower edge
+const bs = G / L
+const zs = G / LZ
+const zx = (x) => (x - (VX - WB)) * zs
 const zPct = (n) => `${((Math.log2(n) - ZLOG_MIN) / (ZLOG_MAX - ZLOG_MIN)) * 100}%`
 
 const sliderPct = (n) => `${((Math.log2(n) - LOG_MIN) / (LOG_MAX - LOG_MIN)) * 100}%`
@@ -145,7 +156,28 @@ const fmt = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${(n / 1
     </div>
 
     <div class="side">
-      <svg :viewBox="`0 0 ${G} ${G}`" class="geo" :class="{ small: zoom }">
+      <div v-if="zoom" class="panes">
+        <svg :viewBox="`0 0 ${G} ${G}`" class="geo2">
+          <rect :width="G" :height="G" class="zbg" />
+          <line v-for="i in BK - 1" :key="`bv${i}`" :x1="i * WB * bs" :x2="i * WB * bs" y1="0" :y2="G" class="bkl" />
+          <line v-for="i in BK - 1" :key="`bh${i}`" :y1="i * WB * bs" :y2="i * WB * bs" x1="0" :x2="G" class="bkl" />
+          <rect :x="(VX - WB) * bs" :y="(VX - WB) * bs" :width="LZ * bs" :height="LZ * bs" class="zdom" />
+          <rect :x="VX * bs" :y="VX * bs" :width="NV * WB * bs" :height="NV * WB * bs" class="zreg" />
+        </svg>
+        <svg :viewBox="`0 0 ${G} ${G}`" class="geo2">
+          <rect :width="G" :height="G" class="zbg" />
+          <line v-for="i in NV + 1" :key="`kv${i}`" :x1="zx(VX + i * WB - WB)" :x2="zx(VX + i * WB - WB)" y1="0" :y2="G" class="bkl" />
+          <line v-for="i in NV + 1" :key="`kh${i}`" :y1="zx(VX + i * WB - WB)" :y2="zx(VX + i * WB - WB)" x1="0" :x2="G" class="bkl" />
+          <circle :cx="G / 2" :cy="G / 2" :r="15 * zs" class="hrc" />
+          <line v-for="i in N - 1" :key="`zv${i}`" :x1="zx(VX + i * W)" :x2="zx(VX + i * W)" :y1="zx(VX)" :y2="zx(VX + NV * WB)" class="zgl" />
+          <line v-for="i in N - 1" :key="`zh${i}`" :y1="zx(VX + i * W)" :y2="zx(VX + i * W)" :x1="zx(VX)" :x2="zx(VX + NV * WB)" class="zgl" />
+          <rect :x="zx(VX)" :y="zx(VX)" :width="NV * WB * zs" :height="NV * WB * zs" class="zreg" />
+          <rect x="1" y="1" :width="G - 2" :height="G - 2" class="zdom" />
+          <rect x="6" y="6" :width="Math.max((L / meshN) * zs, 1.5)" :height="Math.max((L / meshN) * zs, 1.5)" class="mc" />
+          <rect x="6" :y="12 + Math.max((L / meshN) * zs, 1.5)" :width="Math.max((LZ / zoomN) * zs, 1.5)" :height="Math.max((LZ / zoomN) * zs, 1.5)" class="zc" />
+        </svg>
+      </div>
+      <svg v-else :viewBox="`0 0 ${G} ${G}`" class="geo">
         <rect :width="G" :height="G" class="zbg" />
         <rect v-for="(s, k) in shells" :key="k" :x="s.x" :y="s.y" :width="CW" :height="CW" :class="s.cls" />
         <line v-for="i in N - 1" :key="`v${i}`" :x1="i * CW" :x2="i * CW" y1="0" :y2="G" class="zl" />
@@ -154,12 +186,13 @@ const fmt = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${(n / 1
         <rect :x="G - 6 - meshCell" y="6" :width="meshCell" :height="meshCell" class="mc" />
         <rect v-if="zoom" :x="6" y="6" :width="zoomCell" :height="zoomCell" class="zc" />
       </svg>
-      <div class="cap"><template v-if="!zoom">partners of <b>□</b>: </template><span class="warn">pair task</span> · <span class="theory">multipole</span> · <span class="muted">mesh</span> · <span class="accent">□ FFT{{ zoom ? '' : ' cell' }}</span><span v-if="zoom" class="zt"> · □ zoom FFT</span></div>
+      <div v-if="zoom" class="cap"><b>□</b> zoom region · <span class="zt">⬚ zoom mesh</span> · <span class="accent">□ FFT cell</span> · <span class="zt">□ zoom FFT cell</span></div>
+      <div v-else class="cap">partners of <b>□</b>: <span class="warn">pair task</span> · <span class="theory">multipole</span> · <span class="muted">mesh</span> · <span class="accent">□ FFT cell</span></div>
       <div class="setup">
         <div class="muted"># setup (counts are 3D, all {{ fmt(NPAIRS) }} zoom-cell pairs)</div>
-        <div>box {{ L }} Mpc · 29³ bkg cells of {{ (L / 29).toFixed(1) }} Mpc</div>
-        <div>30 Mpc high-res region · pad 1.1 → 1 void cell</div>
-        <div>depth 4 → {{ N }}³ zoom cells of {{ W.toFixed(2) }} Mpc</div>
+        <div>box {{ L }} Mpc · {{ BK }}³ bkg cells of {{ WB.toFixed(1) }} Mpc</div>
+        <div>30 Mpc high-res region → {{ NV }}³ void cell{{ NV > 1 ? 's' : '' }}</div>
+        <div>{{ N }}³ zoom cells of {{ W.toFixed(2) }} Mpc</div>
         <div>r_mesh = 4.5 × 1.25 × L / N<sub>mesh</sub> (SWIFT defaults)</div>
         <div v-if="zoom">zoom mesh over void + 1 bkg cell: {{ LZ.toFixed(1) }} Mpc</div>
         <div>r_FMM = {{ R_FMM.toFixed(1) }} Mpc (illustrative)</div>
@@ -213,7 +246,13 @@ input[type='range'].zr { accent-color: #f472b6; }
 .sw.task { background: var(--warn); }
 .sw.m2l { background: var(--theory); opacity: 0.7; }
 .sw.mesh { background: #2a2a2a; border: 1px solid #555; }
-.geo.small { width: 44%; }
+.panes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.geo2 { width: 100%; display: block; border: 1px solid var(--line); }
+.bkl { stroke: #555; stroke-width: 0.6; }
+.zgl { stroke: #777; stroke-width: 0.4; }
+.zreg { fill: none; stroke: #fff; stroke-width: 1.5; }
+.zdom { fill: none; stroke: #f472b6; stroke-width: 1; stroke-dasharray: 3 2; }
+.hrc { fill: color-mix(in srgb, var(--warn) 25%, transparent); stroke: var(--warn); stroke-width: 1; }
 .geo { width: 56%; display: block; margin: 0 auto; border: 1px solid var(--line); }
 .zbg { fill: #0a0a0a; }
 .zl { stroke: #000; stroke-width: 0.8; }
